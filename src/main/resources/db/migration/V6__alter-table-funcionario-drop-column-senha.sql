@@ -1,0 +1,1 @@
+alter table funcionario drop column senha;
