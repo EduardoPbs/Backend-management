@@ -26,6 +26,7 @@ public class FuncionarioController {
     @PostMapping
     @Transactional
     public ResponseEntity addFuncionario(@RequestBody @Valid DadosCadastroFuncionario dados, UriComponentsBuilder uriBuilder){
+        System.out.println("REQUEST");
         var funcionario = service.save(new Funcionario(dados));
         var uri = uriBuilder.path("/funcionarios/{id}").buildAndExpand(funcionario.getId()).toUri();
         return ResponseEntity.created(uri).body(new DadosDetalhesFuncionario(funcionario));
