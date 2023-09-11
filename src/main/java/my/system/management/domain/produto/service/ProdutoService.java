@@ -8,6 +8,7 @@ import my.system.management.domain.produto.dto.DadosAtualizadosProduto;
 import my.system.management.domain.produto.model.Produto;
 import my.system.management.domain.produto.repository.ProdutoRepository;
 import my.system.management.infra.exception.ProdutoDuplicatedException;
+import my.system.management.infra.exception.ProdutoNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,8 +29,9 @@ public class ProdutoService {
         return repository.findAll();
     }
 
-    public Optional<Produto> findById(String id){
-        final Optional<Produto> produtoEncontrado = repository.findById(id);
+    public Produto findById(String id){
+        final Produto produtoEncontrado = repository.findById(id)
+                .orElseThrow(() -> new ProdutoNotFoundException(id));
         return produtoEncontrado;
     }
 
@@ -52,8 +54,7 @@ public class ProdutoService {
     }
 
     public Produto update(DadosAtualizadosProduto data){
-        Produto produtoRecuperado = findById(data.id())
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado no sistema!"));
+        Produto produtoRecuperado = findById(data.id());
         produtoRecuperado.atualizar(data);
 
         return produtoRecuperado;

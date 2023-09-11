@@ -59,7 +59,7 @@ public class PedidoController {
         BigDecimal total = BigDecimal.ZERO;
 
         for(DadosCadastroItemPedido dado : dados.dataItems()){
-            Produto produtoRecuperado = produtoService.findById(dado.produtoId()).get();
+            Produto produtoRecuperado = produtoService.findById(dado.produtoId());
 
             ItemPedido novoItem = new ItemPedido(
                     dado.quantidade(),
@@ -83,20 +83,21 @@ public class PedidoController {
 
     @GetMapping
     public ResponseEntity<List<Pedido>> getAllPedidos(){
-        List<Pedido> pedidos = pedidoService.findAll();
+        final List<Pedido> pedidos = pedidoService.findAll();
         return ResponseEntity.status(HttpStatus.OK).body(pedidos);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Pedido> getPedido(@PathVariable("id") String id){
-        System.out.println(pedidoService.getReferenceById(id).getItens());
-        return ResponseEntity.status(HttpStatus.OK).body(pedidoService.getReferenceById(id));
+//        System.out.println(pedidoService.getReferenceById(id).getItens());
+        final Pedido pedido = pedidoService.getReferenceById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(pedido);
     }
 
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity removePedido(@PathVariable("id") String id){
-        Pedido pedidoRecuperado = pedidoService.getReferenceById(id);
+        final Pedido pedidoRecuperado = pedidoService.getReferenceById(id);
         pedidoService.delete(pedidoRecuperado);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

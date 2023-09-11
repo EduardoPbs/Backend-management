@@ -7,5 +7,6 @@ public enum Categoria {
     ENLATADO,
     VERDURA,
     BEBDIDA,
-    LIMPEZA
+    LIMPEZA,
+    REFRIGERANTE
 }

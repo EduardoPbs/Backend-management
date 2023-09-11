@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import my.system.management.domain.enums.Categoria;
 import my.system.management.domain.produto.dto.DadosAtualizadosProduto;
 import my.system.management.domain.produto.dto.DadosCadastroProduto;
-import my.system.management.domain.produto.dto.DadosDetalhesPrduto;
+import my.system.management.domain.produto.dto.DadosDetalhesProduto;
 import my.system.management.domain.produto.dto.DadosListagemProduto;
 import my.system.management.domain.produto.model.Produto;
 import my.system.management.domain.produto.service.ProdutoService;
@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -41,13 +42,13 @@ public class ProdutoController {
     @Transactional
     public ResponseEntity atualizarProduto(@RequestBody @Valid DadosAtualizadosProduto dados){
         final Produto produto = service.update(dados);
-        return ResponseEntity.status(HttpStatus.OK).body(new DadosDetalhesPrduto(produto));
+        return ResponseEntity.status(HttpStatus.OK).body(new DadosDetalhesProduto(produto));
     }
 
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity excluirProduto(@PathVariable("id") String id){
-        var produto = service.getReferenceById(id);
+        final Produto produto = service.getReferenceById(id);
         produto.excluir();
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -59,10 +60,16 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<Produto>> getAllProdutos(@PageableDefault(sort = "nome") Pageable pageable){
+        final List<Produto> allProdutos = service.findAll();
+        return ResponseEntity.status(HttpStatus.OK).body(allProdutos);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity detalhesProduto(@PathVariable("id") String id){
-        Produto produto = service.getReferenceById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(new DadosDetalhesPrduto(produto));
+        final Produto produto = service.getReferenceById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(new DadosDetalhesProduto(produto));
     }
 
     @GetMapping("/categorias")
