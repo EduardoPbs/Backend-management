@@ -1,10 +1,7 @@
 package my.system.management.domain.produto.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import my.system.management.domain.enums.Categoria;
 import my.system.management.domain.produto.dto.DadosAtualizadosProduto;
 import my.system.management.domain.produto.dto.DadosCadastroProduto;
@@ -18,6 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
+@ToString
 public class Produto {
 
     @Id
@@ -52,7 +50,7 @@ public class Produto {
         }
 
         if(!dados.valor().equals(null)){
-            this.valor.add(dados.valor());
+            this.valor = dados.valor();
         }
 
         if(dados.categoria() != null){

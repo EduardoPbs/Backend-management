@@ -40,9 +40,7 @@ public class ProdutoController {
     @PutMapping
     @Transactional
     public ResponseEntity atualizarProduto(@RequestBody @Valid DadosAtualizadosProduto dados){
-        var produto = service.getReferenceById(dados.id());
-        produto.atualizar(dados);
-
+        final Produto produto = service.update(dados);
         return ResponseEntity.status(HttpStatus.OK).body(new DadosDetalhesPrduto(produto));
     }
 

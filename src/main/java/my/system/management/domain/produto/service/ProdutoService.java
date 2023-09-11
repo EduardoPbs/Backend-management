@@ -4,8 +4,10 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import my.system.management.domain.enums.Categoria;
+import my.system.management.domain.produto.dto.DadosAtualizadosProduto;
 import my.system.management.domain.produto.model.Produto;
 import my.system.management.domain.produto.repository.ProdutoRepository;
+import my.system.management.infra.exception.ProdutoDuplicatedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +29,8 @@ public class ProdutoService {
     }
 
     public Optional<Produto> findById(String id){
-        return repository.findById(id);
+        final Optional<Produto> produtoEncontrado = repository.findById(id);
+        return produtoEncontrado;
     }
 
     public Produto getReferenceById(String id){
@@ -38,7 +41,21 @@ public class ProdutoService {
         return repository.findAllByAtivoTrue(pageable);
     }
 
-    public Produto save(Produto preduto){
-        return repository.save(preduto);
+    public Produto save(Produto produto){
+        final Optional<Produto> produtoEncontrado = repository.findById(produto.getId());
+
+        if(produtoEncontrado.isPresent() && produtoEncontrado.get().getCodigo().equals(produto.getCodigo())){
+            throw new ProdutoDuplicatedException(produto.getCodigo());
+        }
+
+        return repository.save(produto);
+    }
+
+    public Produto update(DadosAtualizadosProduto data){
+        Produto produtoRecuperado = findById(data.id())
+                .orElseThrow(() -> new RuntimeException("Produto não encontrado no sistema!"));
+        produtoRecuperado.atualizar(data);
+
+        return produtoRecuperado;
     }
 }
