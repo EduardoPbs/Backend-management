@@ -8,9 +8,8 @@ import my.system.management.domain.usuario.model.Usuario;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 
 @Service
 public class TokenService {
@@ -18,13 +17,18 @@ public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
 
+    private static final long TOKEN_VALIDITY = Duration.ofMinutes(10).toMillis();
+
     public String gerarToken(Usuario usuario) {
+        final Instant now = Instant.now();
+        final Instant expires = now.plusMillis(TOKEN_VALIDITY);
         try {
-            var algoritmo = Algorithm.HMAC256(secret);
+            var algoritmo = Algorithm.HMAC512(secret);
             return JWT.create()
-                    .withIssuer("API Voll.med")
-                    .withSubject(usuario.getLogin())
-                    .withExpiresAt(dataExpiracao())
+                    .withIssuer("Management App")
+                    .withSubject(usuario.getUsername())
+                    .withClaim("roles", usuario.getRoles())
+                    .withExpiresAt(expires)
                     .sign(algoritmo);
         } catch (JWTCreationException exception){
             throw new RuntimeException("erro ao gerar token jwt", exception);
@@ -33,9 +37,9 @@ public class TokenService {
 
     public String getSubject(String tokenJWT) {
         try {
-            var algoritmo = Algorithm.HMAC256(secret);
+            var algoritmo = Algorithm.HMAC512(secret);
             return JWT.require(algoritmo)
-                    .withIssuer("API Voll.med")
+                    .withIssuer("Management App")
                     .build()
                     .verify(tokenJWT)
                     .getSubject();
@@ -43,9 +47,4 @@ public class TokenService {
             throw new RuntimeException("Token JWT inválido ou expirado!");
         }
     }
-
-    private Instant dataExpiracao() {
-        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
-    }
-
 }

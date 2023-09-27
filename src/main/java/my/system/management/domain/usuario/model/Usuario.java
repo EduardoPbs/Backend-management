@@ -1,10 +1,7 @@
 package my.system.management.domain.usuario.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import my.system.management.domain.usuario.dto.DadosCadastroUsuario;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,13 +13,14 @@ import java.util.UUID;
 
 @Table(name = "usuarios")
 @Entity(name = "Usuario")
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class Usuario implements UserDetails {
 
-    @Getter
+    private final static String[] ROLES_USER = new String[]{"USER"};
+
     @Id
     private String id;
 
@@ -33,6 +31,10 @@ public class Usuario implements UserDetails {
         this.id = UUID.randomUUID().toString();
         this.login = data.login();
         this.password = data.password();
+    }
+
+    public List<String> getRoles() {
+        return List.of(ROLES_USER);
     }
 
     @Override
