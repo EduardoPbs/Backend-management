@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import my.system.management.domain.itensPedido.dto.DadosCadastroItemPedido;
 import my.system.management.domain.itensPedido.model.ItemPedido;
 import my.system.management.domain.itensPedido.service.ItemPedidoService;
+import my.system.management.domain.pedido.dto.DadosDetalhesPedido;
 import my.system.management.domain.pedido.dto.DadosFinalizarPedido;
 import my.system.management.domain.pedido.model.Pedido;
 import my.system.management.domain.pedido.service.PedidoService;
@@ -40,7 +41,7 @@ public class PedidoController {
     @PostMapping
     @Transactional
     public ResponseEntity novoPedido(UriComponentsBuilder uriBuilder){
-        Pedido pedido = pedidoService.save(
+        final Pedido pedido = pedidoService.save(
                 new Pedido(
                         UUID.randomUUID().toString(),
                         new ArrayList<>(),
@@ -53,7 +54,6 @@ public class PedidoController {
     @PostMapping("/add-items")
     @Transactional
     public ResponseEntity addItem(@RequestBody @Valid DadosFinalizarPedido dados, UriComponentsBuilder uriBuilder){
-
         Pedido pedidoRecuperado = pedidoService.findById(dados.pedido_id()).orElseThrow(() -> new PedidoNotFoundException());
         List<ItemPedido> itens = new ArrayList<>();
         BigDecimal total = BigDecimal.ZERO;
@@ -79,12 +79,18 @@ public class PedidoController {
         itemPedidoService.saveAll(itens);
 
         return ResponseEntity.status(HttpStatus.OK).build();
-    }
+   }
 
     @GetMapping
-    public ResponseEntity<List<Pedido>> getAllPedidos(){
+    public ResponseEntity<List<DadosDetalhesPedido>> getAllPedidos(){
         final List<Pedido> pedidos = pedidoService.findAll();
-        return ResponseEntity.status(HttpStatus.OK).body(pedidos);
+        List<DadosDetalhesPedido> dadosPedidos = new ArrayList<>();
+
+        for (Pedido p : pedidos) {
+            dadosPedidos.add(new DadosDetalhesPedido(p));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(dadosPedidos);
     }
 
     @GetMapping("/{id}")

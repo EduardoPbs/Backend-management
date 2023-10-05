@@ -17,7 +17,7 @@ public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
 
-    private static final long TOKEN_VALIDITY = Duration.ofMinutes(10).toMillis();
+    private static final long TOKEN_VALIDITY = Duration.ofMinutes(25).toMillis();
 
     public String gerarToken(Usuario usuario) {
         final Instant now = Instant.now();

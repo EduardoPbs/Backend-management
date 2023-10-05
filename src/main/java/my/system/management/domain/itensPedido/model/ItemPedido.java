@@ -1,5 +1,6 @@
 package my.system.management.domain.itensPedido.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import my.system.management.domain.pedido.model.Pedido;
@@ -26,9 +27,11 @@ public class ItemPedido {
     private Integer quantidade;
 
     @ManyToOne
+    @JsonIgnore
     private Pedido pedido;
 
     @ManyToOne
+    @JsonIgnore
     private Produto produto;
 
     public ItemPedido(Integer quantidade, Pedido pedido, Produto produto) {

@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-@Getter
+@Data
 public class Pedido {
 
     @Id
@@ -23,10 +23,8 @@ public class Pedido {
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     private List<ItemPedido> itens = new ArrayList<>();
 
-    @Setter
     private LocalDateTime data;
 
-    @Setter
     private BigDecimal total;
 
     public Pedido(String id, List<ItemPedido> itens, BigDecimal total){
