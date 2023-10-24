@@ -55,15 +55,15 @@ public class ProdutoController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<DadosListagemProduto>> getProdutos(@PageableDefault(sort = "nome", size = 20) Pageable pageable){
-        Page<DadosListagemProduto> page = service.findAllByAtivoTrue(pageable).map(DadosListagemProduto::new);
-        return ResponseEntity.status(HttpStatus.OK).body(page);
+    public ResponseEntity<List<DadosListagemProduto>> getProdutos(){
+        List<DadosListagemProduto> activeProducts = service.findAllByAtivoTrue().stream().map(DadosListagemProduto::new).toList();
+        return ResponseEntity.status(HttpStatus.OK).body(activeProducts);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Produto>> getAllProdutos(@PageableDefault(sort = "nome") Pageable pageable){
-        final List<Produto> allProdutos = service.findAll();
-        return ResponseEntity.status(HttpStatus.OK).body(allProdutos);
+    public ResponseEntity<List<Produto>> getAllProdutos(){
+        final List<Produto> allProducts = service.findAll();
+        return ResponseEntity.status(HttpStatus.OK).body(allProducts);
     }
 
     @GetMapping("/{id}")

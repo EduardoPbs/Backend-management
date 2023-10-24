@@ -39,8 +39,8 @@ public class ProdutoService {
         return repository.getReferenceById(id);
     }
 
-    public Page<Produto> findAllByAtivoTrue(Pageable pageable){
-        return repository.findAllByAtivoTrue(pageable);
+    public List<Produto> findAllByAtivoTrue(){
+        return repository.findAllByAtivoTrue();
     }
 
     public Produto save(Produto produto){
