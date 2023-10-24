@@ -9,10 +9,9 @@ import my.system.management.domain.produto.dto.DadosCadastroProduto;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+@Getter
 @Table(name = "produtos")
 @Entity(name = "Produto")
-@Getter
-@NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 @ToString
@@ -29,6 +28,10 @@ public class Produto {
 
     private Integer quantidade;
     private boolean ativo;
+
+    public Produto() {
+        this.id = UUID.randomUUID().toString();
+    }
 
     public Produto(DadosCadastroProduto dados){
         this.id = UUID.randomUUID().toString();
@@ -49,15 +52,15 @@ public class Produto {
             this.nome = dados.nome();
         }
 
-        if(!dados.valor().equals(null)){
+        if(dados.valor() != null) {
             this.valor = dados.valor();
         }
 
-        if(dados.categoria() != null){
+        if(dados.categoria() != null) {
             this.categoria = dados.categoria();
         }
 
-        if(dados.quantidade() != null){
+        if(dados.quantidade() != null) {
             this.quantidade = dados.quantidade();
         }
     }

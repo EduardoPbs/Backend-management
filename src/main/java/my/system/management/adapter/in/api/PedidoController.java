@@ -74,7 +74,7 @@ public class PedidoController {
 
         pedidoRecuperado.setData(LocalDateTime.now());
         pedidoRecuperado.setTotal(total);
-        System.out.println("\n\n\nITENS:" + itens + "\n\n\n");
+//        System.out.println("\n\n\nITENS:" + itens + "\n\n\n");
 
         itemPedidoService.saveAll(itens);
 

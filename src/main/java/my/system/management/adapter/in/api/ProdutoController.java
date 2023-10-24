@@ -33,7 +33,7 @@ public class ProdutoController {
     @PostMapping
     @Transactional
     public ResponseEntity addProduto(@RequestBody @Valid DadosCadastroProduto data, UriComponentsBuilder uriBuilder){
-        Produto produto = service.save(new Produto(data));
+        final Produto produto = service.save(new Produto(data));
         final URI location  = uriBuilder.path("/produtos/{id}").buildAndExpand(produto.getId()).toUri();
         return ResponseEntity.status(HttpStatus.CREATED).location(location).body(produto.getId());
     }
@@ -55,7 +55,7 @@ public class ProdutoController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<DadosListagemProduto>> getProdutos(@PageableDefault(sort = "nome") Pageable pageable){
+    public ResponseEntity<Page<DadosListagemProduto>> getProdutos(@PageableDefault(sort = "nome", size = 20) Pageable pageable){
         Page<DadosListagemProduto> page = service.findAllByAtivoTrue(pageable).map(DadosListagemProduto::new);
         return ResponseEntity.status(HttpStatus.OK).body(page);
     }
