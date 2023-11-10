@@ -3,6 +3,7 @@ package my.system.management.infra.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -54,7 +55,23 @@ public class SecurityConfigurations{
     );
 
     @Bean
+    @Order(1)
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests(req -> req
+                        .requestMatchers(WHITELIST.toArray(String[]::new)).permitAll()
+                        .requestMatchers("/produtos/**", "/pedidos/**").authenticated()
+                        .anyRequest().denyAll()
+                )
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+                .csrf(csrf -> csrf.disable());
+        return http.build();
+    }
+
+    @Bean
+    @Order(2)
+    public SecurityFilterChain adminSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(req -> req
                         .requestMatchers(WHITELIST.toArray(String[]::new)).permitAll()

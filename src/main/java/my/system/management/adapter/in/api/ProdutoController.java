@@ -66,6 +66,12 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.OK).body(allProducts);
     }
 
+    @GetMapping("/all-pagination")
+    public ResponseEntity<Page<DadosListagemProduto>> getPageProducts(@PageableDefault(sort = "nome") Pageable pageable) {
+        final Page<DadosListagemProduto> produtos = service.findAll(pageable).map(DadosListagemProduto::new);
+        return ResponseEntity.status(HttpStatus.OK).body(produtos);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity detalhesProduto(@PathVariable("id") String id){
         final Produto produto = service.getReferenceById(id);

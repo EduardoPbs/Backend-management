@@ -6,5 +6,6 @@ public record DadosAutenticacao(
         @JsonAlias({"email"}) // Apelido que tambem é aceito no parametro como >>login<< (pode ter mais que um)
         String login,
         @JsonAlias({"senha"})
-        String password) {
+        String password
+) {
 }

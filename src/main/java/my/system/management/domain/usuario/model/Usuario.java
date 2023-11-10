@@ -26,11 +26,13 @@ public class Usuario implements UserDetails {
 
     private String login;
     private String password;
+    private boolean is_admin;
 
     public Usuario(DadosCadastroUsuario data){
         this.id = UUID.randomUUID().toString();
         this.login = data.login();
         this.password = data.password();
+        this.is_admin = false;
     }
 
     public List<String> getRoles() {

@@ -2,8 +2,10 @@ package my.system.management.domain.usuario.dto;
 
 import my.system.management.domain.usuario.model.Usuario;
 
-public record DadosDetalhesUsuario(String email, String password) {
+import java.util.List;
+
+public record DadosDetalhesUsuario(String email, String password, List<String> roles) {
     public DadosDetalhesUsuario(Usuario usuario){
-        this(usuario.getLogin(), usuario.getPassword());
+        this(usuario.getLogin(), usuario.getPassword(), usuario.getRoles());
     }
 }

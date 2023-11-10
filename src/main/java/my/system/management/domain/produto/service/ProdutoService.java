@@ -43,6 +43,10 @@ public class ProdutoService {
         return repository.findAllByAtivoTrue();
     }
 
+    public Page<Produto> findAll(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
+
     public Produto save(Produto produto){
         final Optional<Produto> produtoEncontrado = repository.findById(produto.getId());
 
