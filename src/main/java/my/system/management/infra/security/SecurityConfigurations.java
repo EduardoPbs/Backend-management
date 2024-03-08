@@ -25,7 +25,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfigurations{
+public class SecurityConfigurations {
 
     @Autowired
     private SecurityFilter securityFilter;
@@ -45,13 +45,15 @@ public class SecurityConfigurations{
             "/webjars/**",
             "/webjars/swagger-ui/**",
             "/error",
-            "/login"
+            "/auth/**"
     );
 
     public static final List<String> AUTHENTICATED = Arrays.asList(
-            "/produtos/**",
-            "/funcionarios/**",
-            "/pedidos/**"
+            "/products/**",
+            "/employees/**",
+            "/orders/**",
+            "/purchase/**",
+            "/cash-register/**"
     );
 
     @Bean
@@ -60,7 +62,7 @@ public class SecurityConfigurations{
         http
                 .authorizeHttpRequests(req -> req
                         .requestMatchers(WHITELIST.toArray(String[]::new)).permitAll()
-                        .requestMatchers("/produtos/**", "/pedidos/**").authenticated()
+                        .requestMatchers(AUTHENTICATED.toArray(String[]::new)).authenticated()
                         .anyRequest().denyAll()
                 )
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -85,12 +87,12 @@ public class SecurityConfigurations{
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception{
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

@@ -1,1 +1,0 @@
-alter table funcionario modify id varchar(255);

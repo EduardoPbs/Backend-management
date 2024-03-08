@@ -6,14 +6,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class ProdutoDuplicatedException extends RuntimeException{
 
-    private final String codigo;
+    private final String code;
 
-    public ProdutoDuplicatedException(String codigo) {
+    public ProdutoDuplicatedException(String code) {
         super();
-        this.codigo = codigo;
+        this.code = code;
     }
 
-    public String getMessage(String codigo) {
-        return String.format("Pedido com código %s já cadastrado no sistema", codigo);
+    @Override
+    public String getMessage() {
+        return String.format("Produto com código %s já cadastrado no sistema.", code);
     }
 }

@@ -4,7 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import my.system.management.domain.usuario.model.Usuario;
+import my.system.management.domain.user.model.LgUser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -19,16 +19,16 @@ public class TokenService {
 
     private static final long TOKEN_VALIDITY = Duration.ofMinutes(25).toMillis();
 
-    public String gerarToken(Usuario usuario) {
+    public String gerarToken(LgUser lgUser) {
         final Instant now = Instant.now();
         final Instant expires = now.plusMillis(TOKEN_VALIDITY);
         try {
             var algoritmo = Algorithm.HMAC512(secret);
             return JWT.create()
                     .withIssuer("Management App")
-                    .withSubject(usuario.getUsername())
-                    .withClaim("username", usuario.getUsername())
-                    .withClaim("roles", usuario.getRoles())
+                    .withSubject(lgUser.getUsername())
+                    .withClaim("username", lgUser.getUsername())
+                    .withClaim("roles", lgUser.getRoles())
                     .withExpiresAt(expires)
                     .sign(algoritmo);
         } catch (JWTCreationException exception){

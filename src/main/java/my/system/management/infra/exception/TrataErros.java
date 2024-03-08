@@ -21,7 +21,7 @@ public class TrataErros {
         return ResponseEntity.notFound().build();
     }
 
-    private record DadosErrors(String campo, String mensagem){
+    private record DadosErrors(String field, String message){
         public DadosErrors(FieldError error){
             this(error.getField(), error.getDefaultMessage());
         }

@@ -18,6 +18,8 @@ public class ManagementApplication {
 
 	@EventListener(ApplicationReadyEvent.class)
 	public void Listener(){
-		System.out.println("App Started at " + LocalDateTime.now());
+		System.out.println("*".repeat(48));
+		System.out.println("* App Started at " + LocalDateTime.now() + " *");
+		System.out.println("*".repeat(48));
 	}
 }
