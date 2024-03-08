@@ -51,8 +51,8 @@ public class ProductService {
         return repository.save(product);
     }
 
-    public Product update(DataUpdateProduct data) {
-        Product productRecuperado = findById(data.id());
+    public Product update(String id, DataUpdateProduct data) {
+        Product productRecuperado = findById(id);
         productRecuperado.update(data);
 
         return productRecuperado;

@@ -6,11 +6,11 @@ import my.system.management.domain.enums.Category;
 import java.math.BigDecimal;
 
 public record DataUpdateProduct(
-        @NotNull
-        String id,
+        String code,
         String name,
         BigDecimal value,
         Category category,
-        Integer stock
+        Integer stock,
+        boolean active
 ) {
 }

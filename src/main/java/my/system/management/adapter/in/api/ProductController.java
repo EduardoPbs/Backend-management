@@ -37,10 +37,10 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity update(@RequestBody @Valid DataUpdateProduct dados){
-        final Product product = service.update(dados);
+    public ResponseEntity update(@PathVariable("id") String id, @RequestBody @Valid DataUpdateProduct dados){
+        final Product product = service.update(id, dados);
         return ResponseEntity.status(HttpStatus.OK).body(new DataDetailsProduct(product));
     }
 

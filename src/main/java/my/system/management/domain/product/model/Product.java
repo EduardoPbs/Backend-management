@@ -64,5 +64,9 @@ public class Product {
         if (data.stock() != null) {
             this.stock = data.stock();
         }
+
+        if (data.active() != this.active) {
+            this.active = data.active();
+        }
     }
 }
