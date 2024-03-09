@@ -31,7 +31,6 @@ public class OrderItem {
     private Order order;
 
     @ManyToOne
-    @JsonIgnore
     private Product product;
 
     public OrderItem(Integer quantity, Order order, Product product) {

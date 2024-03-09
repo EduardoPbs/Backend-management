@@ -52,6 +52,7 @@ public class SecurityConfigurations {
             "/products/**",
             "/employees/**",
             "/orders/**",
+            "/order-item/**",
             "/purchase/**",
             "/cash-register/**"
     );
