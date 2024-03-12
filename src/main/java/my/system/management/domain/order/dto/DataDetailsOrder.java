@@ -9,8 +9,8 @@ import java.util.List;
 
 public record DataDetailsOrder(
         String id,
-        List<OrderItem> itens,
-        LocalDateTime data,
+        List<OrderItem> items,
+        LocalDateTime date,
         BigDecimal total
 ) {
     public DataDetailsOrder(Order order){
