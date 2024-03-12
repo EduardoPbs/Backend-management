@@ -4,7 +4,9 @@ import jakarta.persistence.EntityNotFoundException;
 import my.system.management.domain.cashRegister.model.CashRegister;
 import my.system.management.domain.cashRegister.service.CashRegisterService;
 import my.system.management.domain.employee.model.Employee;
+import my.system.management.domain.employee.repository.EmployeeRepository;
 import my.system.management.domain.employee.service.EmployeeService;
+import my.system.management.domain.order.dto.DataCreateOrder;
 import my.system.management.domain.order.dto.DataFinishOrder;
 import my.system.management.domain.order.model.Order;
 import my.system.management.domain.order.repository.OrderRepository;
@@ -39,7 +41,7 @@ public class OrderService {
     private ProductRepository productRepository;
 
     @Autowired
-    private EmployeeService employeeService;
+    private EmployeeRepository employeeRepository;
 
     @Autowired
     private CashRegisterService cashRegisterService;
@@ -56,8 +58,18 @@ public class OrderService {
         return orderRepository.getReferenceById(id);
     }
 
-    public Order save(Order order) {
-        return orderRepository.save(order);
+    public Order save(DataCreateOrder order) {
+        final Employee employeeFound = employeeRepository
+                .findById(order.employeeId())
+                .orElseThrow(() -> new EntityNotFoundException("Funcionário não encontrado."));
+
+        final Order newOrder = new Order(
+                new ArrayList<>(),
+                employeeFound,
+                BigDecimal.ZERO
+        );
+
+        return orderRepository.save(newOrder);
     }
 
     public void delete(Order order) {
@@ -96,12 +108,6 @@ public class OrderService {
 
         orderRecuperado.setDate(LocalDateTime.now());
         orderRecuperado.setTotal(total);
-
-        final Employee employeeFounded = employeeService
-                .findById(data.employeeId())
-                .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Funcionário não encontrado."));
-        orderRecuperado.setEmployee(employeeFounded);
 
         cashRegisterService.doEntrance(orderRecuperado.getTotal());
         orderItemRepository.saveAll(itens);

@@ -31,14 +31,21 @@ public class Order {
     private BigDecimal total;
 
     @ManyToOne
-    @JsonIgnore
     private Employee employee;
+
+    public Order(List<OrderItem> items, Employee employee, BigDecimal total){
+        this.id = UUID.randomUUID().toString();
+        this.items = items;
+        this.employee = employee;
+        this.total = total;
+    }
 
     public Order(List<OrderItem> items, BigDecimal total){
         this.id = UUID.randomUUID().toString();
         this.items = items;
         this.total = total;
     }
+
 
     @Override
     public String toString() {

@@ -1,6 +1,10 @@
 package my.system.management.adapter.in.api;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import my.system.management.domain.employee.model.Employee;
+import my.system.management.domain.employee.service.EmployeeService;
+import my.system.management.domain.order.dto.DataCreateOrder;
 import my.system.management.domain.orderItem.service.OrderItemService;
 import my.system.management.domain.order.dto.DataDetailsOrder;
 import my.system.management.domain.order.dto.DataFinishOrder;
@@ -12,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.math.BigDecimal;
@@ -34,12 +39,8 @@ public class OrderController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity novoPedido(UriComponentsBuilder uriBuilder) {
-        final Order order = orderService.save(
-                new Order(
-                        new ArrayList<>(),
-                        BigDecimal.ZERO
-                ));
+    public ResponseEntity novoPedido(UriComponentsBuilder uriBuilder, @RequestBody DataCreateOrder data) {
+        final Order order = orderService.save(data);
         final URI location = uriBuilder.path("pedidos/{id}").buildAndExpand(order.getId()).toUri();
         return ResponseEntity.status(HttpStatus.CREATED).location(location).body(order.getId());
     }
@@ -52,7 +53,7 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DataDetailsOrder>> getAllPedidos() {
+    public ResponseEntity<List<DataDetailsOrder>> getAllOrders() {
         final List<Order> orders = orderService.findAll();
         List<DataDetailsOrder> dadosPedidos = new ArrayList<>();
 

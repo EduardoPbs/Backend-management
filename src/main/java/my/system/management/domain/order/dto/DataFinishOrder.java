@@ -12,9 +12,6 @@ public record DataFinishOrder(
         String orderId,
 
         @JsonAlias("data_items")
-        List<DataCreateOrderItem> dataItems,
-
-        @JsonAlias("employee_id")
-        String employeeId
+        List<DataCreateOrderItem> dataItems
 ) {
 }
