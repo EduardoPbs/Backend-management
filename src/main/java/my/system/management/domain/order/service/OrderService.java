@@ -3,6 +3,8 @@ package my.system.management.domain.order.service;
 import jakarta.persistence.EntityNotFoundException;
 import my.system.management.domain.cashRegister.model.CashRegister;
 import my.system.management.domain.cashRegister.service.CashRegisterService;
+import my.system.management.domain.employee.model.Employee;
+import my.system.management.domain.employee.service.EmployeeService;
 import my.system.management.domain.order.dto.DataFinishOrder;
 import my.system.management.domain.order.model.Order;
 import my.system.management.domain.order.repository.OrderRepository;
@@ -13,9 +15,12 @@ import my.system.management.domain.product.model.Product;
 import my.system.management.domain.product.repository.ProductRepository;
 import my.system.management.infra.exception.PedidoNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +37,9 @@ public class OrderService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private EmployeeService employeeService;
 
     @Autowired
     private CashRegisterService cashRegisterService;
@@ -57,7 +65,7 @@ public class OrderService {
     }
 
     public void addOrderItems(DataFinishOrder data) {
-        Order orderRecuperado = orderRepository.findById(data.pedido_id()).orElseThrow(() -> new PedidoNotFoundException());
+        Order orderRecuperado = orderRepository.findById(data.orderId()).orElseThrow(() -> new PedidoNotFoundException());
         List<OrderItem> itens = new ArrayList<>();
         BigDecimal total = BigDecimal.ZERO;
 
@@ -88,6 +96,12 @@ public class OrderService {
 
         orderRecuperado.setDate(LocalDateTime.now());
         orderRecuperado.setTotal(total);
+
+        final Employee employeeFounded = employeeService
+                .findById(data.employeeId())
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Funcionário não encontrado."));
+        orderRecuperado.setEmployee(employeeFounded);
 
         cashRegisterService.doEntrance(orderRecuperado.getTotal());
         orderItemRepository.saveAll(itens);

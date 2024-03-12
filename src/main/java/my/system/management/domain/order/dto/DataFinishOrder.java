@@ -8,9 +8,13 @@ import java.util.List;
 
 public record DataFinishOrder(
         @NotBlank
-        String pedido_id,
+        @JsonAlias("order_id")
+        String orderId,
 
         @JsonAlias("data_items")
-        List<DataCreateOrderItem> dataItems
+        List<DataCreateOrderItem> dataItems,
+
+        @JsonAlias("employee_id")
+        String employeeId
 ) {
 }
