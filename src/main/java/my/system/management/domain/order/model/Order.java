@@ -31,6 +31,7 @@ public class Order {
     private BigDecimal total;
 
     @ManyToOne
+    @JsonIgnore
     private Employee employee;
 
     public Order(List<OrderItem> items, Employee employee, BigDecimal total){

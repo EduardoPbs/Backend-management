@@ -27,7 +27,6 @@ public class OrderItem {
     private Integer quantity;
 
     @ManyToOne
-    @JsonIgnore
     private Order order;
 
     @ManyToOne

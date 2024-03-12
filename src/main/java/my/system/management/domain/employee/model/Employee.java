@@ -35,6 +35,7 @@ public class Employee {
     private boolean active;
 
     @OneToMany(mappedBy = "employee")
+    @JsonIgnore
     private List<Order> orders = new ArrayList<>();
 
     @ManyToOne

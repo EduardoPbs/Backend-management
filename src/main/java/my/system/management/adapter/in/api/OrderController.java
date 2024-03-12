@@ -65,9 +65,11 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Order> getPedido(@PathVariable("id") String id) {
-        final Order order = orderService.getReferenceById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(order);
+    public ResponseEntity<DataDetailsOrder> getPedido(@PathVariable("id") String id) {
+        final Order order = orderService
+                .findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Pedido não encontrado."));
+        return ResponseEntity.status(HttpStatus.OK).body(new DataDetailsOrder(order));
     }
 
     @DeleteMapping("/{id}")
