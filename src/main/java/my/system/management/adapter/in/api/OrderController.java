@@ -57,8 +57,8 @@ public class OrderController {
         final List<Order> orders = orderService.findAll();
         List<DataDetailsOrder> dadosPedidos = new ArrayList<>();
 
-        for (Order p : orders) {
-            dadosPedidos.add(new DataDetailsOrder(p));
+        for (Order order : orders) {
+            dadosPedidos.add(new DataDetailsOrder(order));
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(dadosPedidos);
