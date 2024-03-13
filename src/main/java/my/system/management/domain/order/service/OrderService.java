@@ -68,6 +68,7 @@ public class OrderService {
                 employeeFound,
                 BigDecimal.ZERO
         );
+        newOrder.setDate(LocalDateTime.now());
 
         return orderRepository.save(newOrder);
     }
@@ -106,7 +107,6 @@ public class OrderService {
             itens.add(novoItem);
         }
 
-        orderRecuperado.setDate(LocalDateTime.now());
         orderRecuperado.setTotal(total);
 
         cashRegisterService.doEntrance(orderRecuperado.getTotal());

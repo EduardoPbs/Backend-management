@@ -1,5 +1,6 @@
 package my.system.management.adapter.in.api;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import my.system.management.domain.employee.dto.DataUpdateEmployee;
 import my.system.management.domain.employee.dto.DataCreateEmployee;
@@ -29,7 +30,7 @@ public class EmployeeController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity addFuncionario(@RequestBody @Valid DataCreateEmployee dados, UriComponentsBuilder uriBuilder){
+    public ResponseEntity addFuncionario(@RequestBody @Valid DataCreateEmployee dados, UriComponentsBuilder uriBuilder) {
         System.out.println("REQUEST");
         var funcionario = service.save(new Employee(dados));
         var uri = uriBuilder.path("/funcionarios/{id}").buildAndExpand(funcionario.getId()).toUri();
@@ -37,7 +38,7 @@ public class EmployeeController {
     }
 
     @GetMapping("all-pagination")
-    public ResponseEntity<Page<DataListEmployee>> getFuncionarios(@PageableDefault(sort = "name") Pageable pageable){
+    public ResponseEntity<Page<DataListEmployee>> getFuncionarios(@PageableDefault(sort = "name") Pageable pageable) {
         var page = service.findAllByActiveTrue(pageable).map(DataListEmployee::new);
         return ResponseEntity.ok(page);
     }
@@ -46,15 +47,23 @@ public class EmployeeController {
     public ResponseEntity<List<DataListEmployee>> getEmployees() {
         final List<Employee> employees = service.findAll();
         List<DataListEmployee> employeesDto = new ArrayList<>();
-        for(Employee employee : employees) {
+        for (Employee employee : employees) {
             employeesDto.add(new DataListEmployee(employee));
         }
         return ResponseEntity.status(HttpStatus.OK).body(employeesDto);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Employee> findById(@PathVariable("id") String id) {
+        final Employee employee = service
+                .findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Funcionário não encontrado."));
+        return ResponseEntity.status(HttpStatus.OK).body(employee);
+    }
+
     @PutMapping
     @Transactional
-    public ResponseEntity atualizarFuncionario(@RequestBody @Valid DataUpdateEmployee dados){
+    public ResponseEntity atualizarFuncionario(@RequestBody @Valid DataUpdateEmployee dados) {
         var funcionario = service.getReferenceById(dados.id());
         funcionario.update(dados);
         return ResponseEntity.ok(new DataDetailsEmployee(funcionario));
@@ -62,7 +71,7 @@ public class EmployeeController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity excluirFuncionario(@PathVariable("id") String id){
+    public ResponseEntity excluirFuncionario(@PathVariable("id") String id) {
         var funcionario = service.getReferenceById(id);
         funcionario.delete();
         return ResponseEntity.noContent().build();
