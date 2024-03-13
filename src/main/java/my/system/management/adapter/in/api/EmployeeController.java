@@ -11,10 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("employees")
@@ -32,10 +36,20 @@ public class EmployeeController {
         return ResponseEntity.created(uri).body(new DataDetailsEmployee(funcionario));
     }
 
-    @GetMapping
+    @GetMapping("all-pagination")
     public ResponseEntity<Page<DataListEmployee>> getFuncionarios(@PageableDefault(sort = "name") Pageable pageable){
         var page = service.findAllByActiveTrue(pageable).map(DataListEmployee::new);
         return ResponseEntity.ok(page);
+    }
+
+    @GetMapping("all")
+    public ResponseEntity<List<DataListEmployee>> getEmployees() {
+        final List<Employee> employees = service.findAll();
+        List<DataListEmployee> employeesDto = new ArrayList<>();
+        for(Employee employee : employees) {
+            employeesDto.add(new DataListEmployee(employee));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(employeesDto);
     }
 
     @PutMapping
