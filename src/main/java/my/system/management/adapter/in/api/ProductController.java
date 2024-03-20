@@ -32,21 +32,21 @@ public class ProductController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<Product> create(@RequestBody @Valid DataCreateProduct data, UriComponentsBuilder uriBuilder){
+    public ResponseEntity<Product> create(@RequestBody @Valid DataCreateProduct data, UriComponentsBuilder uriBuilder) {
         final Product product = service.save(new Product(data));
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity update(@PathVariable("id") String id, @RequestBody @Valid DataUpdateProduct dados){
+    public ResponseEntity update(@PathVariable("id") String id, @RequestBody @Valid DataUpdateProduct dados) {
         final Product product = service.update(id, dados);
         return ResponseEntity.status(HttpStatus.OK).body(new DataDetailsProduct(product));
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity delete(@PathVariable("id") String id){
+    public ResponseEntity delete(@PathVariable("id") String id) {
         final Product product = service.getReferenceById(id);
         product.delete();
 
@@ -54,13 +54,13 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DataListProduct>> getProducts(){
+    public ResponseEntity<List<DataListProduct>> getProducts() {
         List<DataListProduct> activeProducts = service.findAllByAtivoTrue().stream().map(DataListProduct::new).toList();
         return ResponseEntity.status(HttpStatus.OK).body(activeProducts);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Product>> showAll(){
+    public ResponseEntity<List<Product>> showAll() {
         final List<Product> allProducts = service.findAll();
         return ResponseEntity.status(HttpStatus.OK).body(allProducts);
     }
@@ -72,13 +72,21 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity showOne(@PathVariable("id") String id){
+    public ResponseEntity showOne(@PathVariable("id") String id) {
         final Product product = service.getReferenceById(id);
         return ResponseEntity.status(HttpStatus.OK).body(new DataDetailsProduct(product));
     }
 
-        @GetMapping("/categories")
-    public ResponseEntity<List<Category>> getCategories(){
+    @GetMapping("/categories")
+    public ResponseEntity<List<Category>> getCategories() {
         return ResponseEntity.status(HttpStatus.OK).body(Arrays.asList(Category.values()));
+    }
+
+    @PatchMapping("/{id}")
+    @Transactional
+    public ResponseEntity restore(@PathVariable("id") String id) {
+        final Product productFound = service.findById(id);
+        productFound.restore();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

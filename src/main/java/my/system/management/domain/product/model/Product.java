@@ -44,6 +44,10 @@ public class Product {
         this.active = true;
     }
 
+    public void restore() {
+        this.active = true;
+    }
+
     public void delete() {
         this.active = false;
     }
@@ -63,10 +67,6 @@ public class Product {
 
         if (data.stock() != null) {
             this.stock = data.stock();
-        }
-
-        if (data.active() != this.active) {
-            this.active = data.active();
         }
     }
 }

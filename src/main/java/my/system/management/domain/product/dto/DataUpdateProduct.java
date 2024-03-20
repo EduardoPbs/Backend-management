@@ -10,7 +10,6 @@ public record DataUpdateProduct(
         String name,
         BigDecimal value,
         Category category,
-        Integer stock,
-        boolean active
+        Integer stock
 ) {
 }
