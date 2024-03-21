@@ -6,10 +6,12 @@ import jakarta.validation.Valid;
 import my.system.management.domain.itemPurchase.dto.DataCreateItemPurchase;
 import my.system.management.domain.itemPurchase.model.ItemPurchase;
 import my.system.management.domain.itemPurchase.service.ItemPurchaseService;
+import my.system.management.domain.order.dto.DataDetailsOrder;
 import my.system.management.domain.order.model.Order;
 import my.system.management.domain.product.model.Product;
 import my.system.management.domain.product.service.ProductService;
 import my.system.management.domain.purchase.dto.DataCreatePurchase;
+import my.system.management.domain.purchase.dto.DataDetailsPurchase;
 import my.system.management.domain.purchase.dto.DataFinishPurchase;
 import my.system.management.domain.purchase.model.Purchase;
 import my.system.management.domain.purchase.service.PurchaseService;
@@ -40,6 +42,12 @@ public class PurchaseController {
         return ResponseEntity.status(HttpStatus.OK).body(purchaseList);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<DataDetailsPurchase> find(@PathVariable("id") String id) {
+        final Purchase purchaseFound = purchaseService.findById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(new DataDetailsPurchase(purchaseFound));
+    }
+
     @PostMapping
     @Transactional
     public ResponseEntity<String> save() {
@@ -54,6 +62,22 @@ public class PurchaseController {
     @Transactional
     public ResponseEntity addItem(@RequestBody @Valid DataFinishPurchase data) {
         purchaseService.addItemInPurchase(data);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PatchMapping("/finish/{id}")
+    @Transactional
+    public ResponseEntity completeStatus(@PathVariable("id") String id) {
+        final Purchase purchase = purchaseService.findById(id);
+        purchase.completeStatus();
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PatchMapping("/pending/{id}")
+    @Transactional
+    public ResponseEntity pendingStatus(@PathVariable("id") String id) {
+        final Purchase purchase = purchaseService.findById(id);
+        purchase.pendingStatus();
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

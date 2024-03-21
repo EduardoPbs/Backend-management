@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import my.system.management.domain.enums.PurchaseStatus;
 import my.system.management.domain.itemPurchase.model.ItemPurchase;
 import my.system.management.domain.purchase.dto.DataCreatePurchase;
 
@@ -30,12 +31,16 @@ public class Purchase {
 
     private LocalDateTime date;
 
+    @Enumerated(EnumType.STRING)
+    private PurchaseStatus status;
+
     private BigDecimal total;
 
     public Purchase(List<ItemPurchase> items, BigDecimal total){
         this.id = UUID.randomUUID().toString();
         this.items = items;
         this.date = LocalDateTime.now();
+        this.status = PurchaseStatus.PENDENTE;
         this.total = total;
     }
 
@@ -53,5 +58,13 @@ public class Purchase {
                 ", date=" + date +
                 ", total=" + total +
                 '}';
+    }
+
+    public void completeStatus() {
+        this.status = PurchaseStatus.FINALIZADO;
+    }
+
+    public void pendingStatus() {
+        this.status = PurchaseStatus.PENDENTE;
     }
 }

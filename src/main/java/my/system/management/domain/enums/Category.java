@@ -1,12 +1,17 @@
 package my.system.management.domain.enums;
 
 public enum Category {
-    ALIMENTO,
+    FRUTA,
     FRIOS,
-    HIGIENE,
-    ENLATADO,
+    BEBIDA,
+    NATURAL,
     VERDURA,
-    BEBDIDA,
     LIMPEZA,
-    REFRIGERANTE
+    HIGIENE,
+    ALIMENTO,
+    ENLATADO,
+    CHOCOLATE,
+    SALGADINHO,
+    REFRIGERANTE,
+    HIGIENE_PESSOAL,
 }

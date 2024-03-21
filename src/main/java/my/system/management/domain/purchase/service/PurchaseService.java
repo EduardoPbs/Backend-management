@@ -3,6 +3,7 @@ package my.system.management.domain.purchase.service;
 import jakarta.persistence.EntityNotFoundException;
 import my.system.management.domain.cashRegister.model.CashRegister;
 import my.system.management.domain.cashRegister.service.CashRegisterService;
+import my.system.management.domain.enums.PurchaseStatus;
 import my.system.management.domain.itemPurchase.dto.DataCreateItemPurchase;
 import my.system.management.domain.itemPurchase.model.ItemPurchase;
 import my.system.management.domain.itemPurchase.repository.ItemPurchaseRepository;
@@ -42,8 +43,10 @@ public class PurchaseService {
         return purchaseRepository.findAll(sort);
     }
 
-    public Optional<Purchase> findById(String id) {
-        return purchaseRepository.findById(id);
+    public Purchase findById(String id) {
+        return purchaseRepository
+                .findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Compra não encontrada."));
     }
 
     public Purchase getReferenceById(String id) {
@@ -87,6 +90,7 @@ public class PurchaseService {
 
         purchaseFound.setDate(LocalDateTime.now());
         purchaseFound.setTotal(total);
+        purchaseFound.setStatus(PurchaseStatus.FINALIZADO);
 
         cashRegisterService.doPullout(purchaseFound.getTotal());
         itemPurchaseRepository.saveAll(items);
