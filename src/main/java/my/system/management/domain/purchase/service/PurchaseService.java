@@ -12,6 +12,7 @@ import my.system.management.domain.purchase.dto.DataFinishPurchase;
 import my.system.management.domain.purchase.model.Purchase;
 import my.system.management.domain.purchase.repository.PurchaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -37,8 +38,8 @@ public class PurchaseService {
     @Autowired
     private CashRegisterService cashRegisterService;
 
-    public List<Purchase> findAll() {
-        return purchaseRepository.findAll();
+    public List<Purchase> findAll(Sort sort) {
+        return purchaseRepository.findAll(sort);
     }
 
     public Optional<Purchase> findById(String id) {

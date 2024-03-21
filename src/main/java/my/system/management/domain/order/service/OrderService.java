@@ -17,6 +17,7 @@ import my.system.management.domain.product.model.Product;
 import my.system.management.domain.product.repository.ProductRepository;
 import my.system.management.infra.exception.PedidoNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -46,8 +47,8 @@ public class OrderService {
     @Autowired
     private CashRegisterService cashRegisterService;
 
-    public List<Order> findAll() {
-        return orderRepository.findAll();
+    public List<Order> findAll(Sort sort) {
+        return orderRepository.findAll(sort);
     }
 
     public Optional<Order> findById(String id) {

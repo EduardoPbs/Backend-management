@@ -14,6 +14,7 @@ import my.system.management.domain.purchase.dto.DataFinishPurchase;
 import my.system.management.domain.purchase.model.Purchase;
 import my.system.management.domain.purchase.service.PurchaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,15 +32,11 @@ public class PurchaseController {
     @Autowired
     private PurchaseService purchaseService;
 
-    @Autowired
-    private ProductService productService;
-
-    @Autowired
-    private ItemPurchaseService itemPurchaseService;
-
     @GetMapping
-    public ResponseEntity<List<Purchase>> findAll() {
-        final List<Purchase> purchaseList = Collections.unmodifiableList(purchaseService.findAll());
+    public ResponseEntity<List<Purchase>> findAll(@RequestParam(required = false, defaultValue = "date") String sortBy,
+                                                  @RequestParam(required = false, defaultValue = "DESC") String sortDirection) {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        final List<Purchase> purchaseList = Collections.unmodifiableList(purchaseService.findAll(sort));
         return ResponseEntity.status(HttpStatus.OK).body(purchaseList);
     }
 

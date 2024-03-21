@@ -12,6 +12,7 @@ import my.system.management.domain.order.model.Order;
 import my.system.management.domain.order.service.OrderService;
 import my.system.management.domain.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,12 +32,6 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @Autowired
-    private ProductService productService;
-
-    @Autowired
-    private OrderItemService orderItemService;
-
     @PostMapping
     @Transactional
     public ResponseEntity novoPedido(UriComponentsBuilder uriBuilder, @RequestBody DataCreateOrder data) {
@@ -53,8 +48,10 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DataDetailsOrder>> getAllOrders() {
-        final List<Order> orders = orderService.findAll();
+    public ResponseEntity<List<DataDetailsOrder>> getAllOrders(@RequestParam(required = false, defaultValue = "date") String sortBy,
+                                                               @RequestParam(required = false, defaultValue = "DESC") String sortDirection) {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        final List<Order> orders = orderService.findAll(sort);
         List<DataDetailsOrder> dadosPedidos = new ArrayList<>();
 
         for (Order order : orders) {

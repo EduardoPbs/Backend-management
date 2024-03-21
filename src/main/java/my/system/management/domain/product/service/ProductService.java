@@ -8,6 +8,7 @@ import my.system.management.infra.exception.ProdutoNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,6 +40,10 @@ public class ProductService {
 
     public Page<Product> findAll(Pageable pageable) {
         return repository.findAll(pageable);
+    }
+
+    public List<Product> findAll(Sort sort) {
+        return repository.findAll(sort);
     }
 
     public Product save(Product product) {

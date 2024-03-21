@@ -35,6 +35,7 @@ public class Purchase {
     public Purchase(List<ItemPurchase> items, BigDecimal total){
         this.id = UUID.randomUUID().toString();
         this.items = items;
+        this.date = LocalDateTime.now();
         this.total = total;
     }
 

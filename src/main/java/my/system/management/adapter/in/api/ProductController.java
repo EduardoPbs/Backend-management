@@ -11,6 +11,7 @@ import my.system.management.domain.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,8 +61,10 @@ public class ProductController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Product>> showAll() {
-        final List<Product> allProducts = service.findAll();
+    public ResponseEntity<List<Product>> showAll(@RequestParam(required = false, defaultValue = "stock") String sortBy,
+                                                 @RequestParam(required = false, defaultValue = "DESC") String sortDirection) {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        final List<Product> allProducts = service.findAll(sort);
         return ResponseEntity.status(HttpStatus.OK).body(allProducts);
     }
 
