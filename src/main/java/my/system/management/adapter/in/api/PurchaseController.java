@@ -1,16 +1,7 @@
 package my.system.management.adapter.in.api;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import my.system.management.domain.itemPurchase.dto.DataCreateItemPurchase;
-import my.system.management.domain.itemPurchase.model.ItemPurchase;
-import my.system.management.domain.itemPurchase.service.ItemPurchaseService;
-import my.system.management.domain.order.dto.DataDetailsOrder;
-import my.system.management.domain.order.model.Order;
-import my.system.management.domain.product.model.Product;
-import my.system.management.domain.product.service.ProductService;
-import my.system.management.domain.purchase.dto.DataCreatePurchase;
 import my.system.management.domain.purchase.dto.DataDetailsPurchase;
 import my.system.management.domain.purchase.dto.DataFinishPurchase;
 import my.system.management.domain.purchase.model.Purchase;
@@ -22,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

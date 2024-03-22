@@ -8,6 +8,7 @@ import my.system.management.domain.cashRegister.model.CashRegister;
 import my.system.management.domain.cashRegister.service.CashRegisterService;
 import my.system.management.domain.purchase.model.Purchase;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +24,19 @@ public class CashRegisterController {
     private CashRegisterService cashRegisterService;
 
     @GetMapping("/balance")
-    public ResponseEntity<DetailsCashRegisterDto> balance() {
-        final CashRegister cashRegister = cashRegisterService.getCashRegister();
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(new DetailsCashRegisterDto(cashRegister.getTotal()));
+    public ResponseEntity<BigDecimal> balance() {
+        final BigDecimal totalBalance = cashRegisterService.getCashRegister().getTotal();
+        return ResponseEntity.status(HttpStatus.OK).body(totalBalance);
+    }
+
+    @GetMapping("/all-activities")
+    public ResponseEntity<List<DetailsCashRegisterDto>> activities(
+            @RequestParam(required = false, defaultValue = "createdAt") String sortBy,
+            @RequestParam(required = false, defaultValue = "DESC") String sortDirection
+    ) {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        final List<DetailsCashRegisterDto> registerDtos = cashRegisterService.findAll(sort);
+        return ResponseEntity.status(HttpStatus.OK).body(registerDtos);
     }
 
     @PostMapping("/entrance")

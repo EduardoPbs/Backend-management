@@ -1,15 +1,19 @@
 package my.system.management.domain.cashRegister.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import my.system.management.domain.cashRegister.dto.DetailsCashRegisterDto;
 import my.system.management.domain.cashRegister.model.CashRegister;
 import my.system.management.domain.cashRegister.repository.CashRegisterRepository;
 import my.system.management.domain.purchase.model.Purchase;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -17,6 +21,15 @@ public class CashRegisterService {
 
     @Autowired
     private CashRegisterRepository cashRegisterRepository;
+
+    public List<DetailsCashRegisterDto> findAll(Sort sort) {
+        final List<CashRegister> registers = cashRegisterRepository.findAll(sort);
+        List<DetailsCashRegisterDto> registerDtos = new ArrayList<>();
+        for (CashRegister r : registers) {
+            registerDtos.add(new DetailsCashRegisterDto(r));
+        }
+        return Collections.unmodifiableList(registerDtos);
+    }
 
     public Boolean doEntrance(BigDecimal value) {
         if (value.compareTo(BigDecimal.ZERO) <= 0) {

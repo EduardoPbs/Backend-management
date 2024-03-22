@@ -53,4 +53,24 @@ public class CashRegister {
                 " Op: " + this.operation +
                 " Total: " + this.total + " }";
     }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return this.createdAt;
+    }
+
+    public Operations getOperation() {
+        return this.operation;
+    }
+
+    public BigDecimal getValue() {
+        return this.value;
+    }
+
+    public BigDecimal getTotal() {
+        return this.total;
+    }
 }
