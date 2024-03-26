@@ -39,7 +39,6 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    @Transactional
     public ResponseEntity update(@PathVariable("id") String id, @RequestBody @Valid DataUpdateProduct dados) {
         final Product product = service.update(id, dados);
         return ResponseEntity.status(HttpStatus.OK).body(new DataDetailsProduct(product));
@@ -56,13 +55,15 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<List<DataListProduct>> getProducts() {
-        List<DataListProduct> activeProducts = service.findAllByAtivoTrue().stream().map(DataListProduct::new).toList();
+        List<DataListProduct> activeProducts = service.findAllByAtivoTrue();
         return ResponseEntity.status(HttpStatus.OK).body(activeProducts);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Product>> showAll(@RequestParam(required = false, defaultValue = "stock") String sortBy,
-                                                 @RequestParam(required = false, defaultValue = "DESC") String sortDirection) {
+    public ResponseEntity<List<Product>> showAll(
+            @RequestParam(required = false, defaultValue = "stock") String sortBy,
+            @RequestParam(required = false, defaultValue = "DESC") String sortDirection
+    ) {
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
         final List<Product> allProducts = service.findAll(sort);
         return ResponseEntity.status(HttpStatus.OK).body(allProducts);

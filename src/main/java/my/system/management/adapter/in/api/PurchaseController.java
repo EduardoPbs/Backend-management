@@ -25,10 +25,12 @@ public class PurchaseController {
     private PurchaseService purchaseService;
 
     @GetMapping
-    public ResponseEntity<List<Purchase>> findAll(@RequestParam(required = false, defaultValue = "date") String sortBy,
-                                                  @RequestParam(required = false, defaultValue = "DESC") String sortDirection) {
+    public ResponseEntity<List<Purchase>> findAll(
+            @RequestParam(required = false, defaultValue = "date") String sortBy,
+            @RequestParam(required = false, defaultValue = "DESC") String sortDirection
+    ) {
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
-        final List<Purchase> purchaseList = Collections.unmodifiableList(purchaseService.findAll(sort));
+        final List<Purchase> purchaseList = purchaseService.findAll(sort);
         return ResponseEntity.status(HttpStatus.OK).body(purchaseList);
     }
 
@@ -39,7 +41,6 @@ public class PurchaseController {
     }
 
     @PostMapping
-    @Transactional
     public ResponseEntity<String> save() {
         final Purchase purchaseCreated = purchaseService.save(new Purchase(
                 new ArrayList<>(),
@@ -49,7 +50,6 @@ public class PurchaseController {
     }
 
     @PostMapping("/add-items")
-    @Transactional
     public ResponseEntity addItem(@RequestBody @Valid DataFinishPurchase data) {
         purchaseService.addItemInPurchase(data);
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -72,7 +72,6 @@ public class PurchaseController {
     }
 
     @DeleteMapping("/{id}")
-    @Transactional
     public ResponseEntity delete(@PathVariable("id") String id) {
         final Purchase purchaseFound = purchaseService.getReferenceById(id);
         purchaseService.delete(purchaseFound);

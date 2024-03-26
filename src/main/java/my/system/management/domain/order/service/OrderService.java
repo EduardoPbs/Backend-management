@@ -7,6 +7,7 @@ import my.system.management.domain.employee.model.Employee;
 import my.system.management.domain.employee.repository.EmployeeRepository;
 import my.system.management.domain.employee.service.EmployeeService;
 import my.system.management.domain.order.dto.DataCreateOrder;
+import my.system.management.domain.order.dto.DataDetailsOrder;
 import my.system.management.domain.order.dto.DataFinishOrder;
 import my.system.management.domain.order.model.Order;
 import my.system.management.domain.order.repository.OrderRepository;
@@ -20,12 +21,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,18 +50,28 @@ public class OrderService {
     @Autowired
     private CashRegisterService cashRegisterService;
 
-    public List<Order> findAll(Sort sort) {
-        return orderRepository.findAll(sort);
+    public List<DataDetailsOrder> findAll(Sort sort) {
+        final List<DataDetailsOrder> orders = orderRepository
+                .findAll(sort)
+                .stream()
+                .map(DataDetailsOrder::new)
+                .toList();
+        return orders;
     }
 
-    public Optional<Order> findById(String id) {
-        return orderRepository.findById(id);
+    public Order findById(String id) {
+        return orderRepository
+                .findById(id)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Pedido não encontrado.")
+                );
     }
 
     public Order getReferenceById(String id) {
         return orderRepository.getReferenceById(id);
     }
 
+    @Transactional
     public Order save(DataCreateOrder order) {
         final Employee employeeFound = employeeRepository
                 .findById(order.employeeId())
@@ -74,10 +87,12 @@ public class OrderService {
         return orderRepository.save(newOrder);
     }
 
+    @Transactional
     public void delete(Order order) {
         orderRepository.delete(order);
     }
 
+    @Transactional
     public void addOrderItems(DataFinishOrder data) {
         Order orderRecuperado = orderRepository.findById(data.orderId()).orElseThrow(() -> new PedidoNotFoundException());
         List<OrderItem> itens = new ArrayList<>();

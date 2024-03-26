@@ -33,7 +33,6 @@ public class OrderController {
     private OrderService orderService;
 
     @PostMapping
-    @Transactional
     public ResponseEntity novoPedido(UriComponentsBuilder uriBuilder, @RequestBody DataCreateOrder data) {
         final Order order = orderService.save(data);
         final URI location = uriBuilder.path("pedidos/{id}").buildAndExpand(order.getId()).toUri();
@@ -41,39 +40,31 @@ public class OrderController {
     }
 
     @PostMapping("/add-items")
-    @Transactional
     public ResponseEntity addItem(@RequestBody @Valid DataFinishOrder data) {
         orderService.addOrderItems(data);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping
-    public ResponseEntity<List<DataDetailsOrder>> getAllOrders(@RequestParam(required = false, defaultValue = "date") String sortBy,
-                                                               @RequestParam(required = false, defaultValue = "DESC") String sortDirection) {
+    public ResponseEntity<List<DataDetailsOrder>> getAllOrders(
+            @RequestParam(required = false, defaultValue = "date") String sortBy,
+            @RequestParam(required = false, defaultValue = "DESC") String sortDirection
+    ) {
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
-        final List<Order> orders = orderService.findAll(sort);
-        List<DataDetailsOrder> dadosPedidos = new ArrayList<>();
-
-        for (Order order : orders) {
-            dadosPedidos.add(new DataDetailsOrder(order));
-        }
-
-        return ResponseEntity.status(HttpStatus.OK).body(dadosPedidos);
+        final List<DataDetailsOrder> orders = orderService.findAll(sort);
+        return ResponseEntity.status(HttpStatus.OK).body(orders);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<DataDetailsOrder> getPedido(@PathVariable("id") String id) {
-        final Order order = orderService
-                .findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Pedido não encontrado."));
+        final Order order = orderService.findById(id);
         return ResponseEntity.status(HttpStatus.OK).body(new DataDetailsOrder(order));
     }
 
     @DeleteMapping("/{id}")
-    @Transactional
     public ResponseEntity removePedido(@PathVariable("id") String id) {
-        final Order orderRecuperado = orderService.getReferenceById(id);
-        orderService.delete(orderRecuperado);
+        final Order orderFounded = orderService.getReferenceById(id);
+        orderService.delete(orderFounded);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

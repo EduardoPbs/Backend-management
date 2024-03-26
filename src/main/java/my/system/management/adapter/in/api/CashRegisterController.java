@@ -40,14 +40,12 @@ public class CashRegisterController {
     }
 
     @PostMapping("/entrance")
-    @Transactional
     public ResponseEntity<Boolean> entrance(@RequestBody EntranceCashRegisterDto data) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(cashRegisterService.doEntrance(data.value()));
     }
 
     @PostMapping("/pullout")
-    @Transactional
     public ResponseEntity<Boolean> pullout(@RequestBody PulloutCashRegisterDto data) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(cashRegisterService.doPullout(data.value()));

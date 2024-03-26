@@ -29,7 +29,6 @@ public class EmployeeController {
     private EmployeeService service;
 
     @PostMapping
-    @Transactional
     public ResponseEntity addFuncionario(@RequestBody @Valid DataCreateEmployee dados, UriComponentsBuilder uriBuilder) {
         System.out.println("REQUEST");
         var funcionario = service.save(new Employee(dados));
@@ -45,35 +44,28 @@ public class EmployeeController {
 
     @GetMapping("all")
     public ResponseEntity<List<DataListEmployee>> getEmployees() {
-        final List<Employee> employees = service.findAll();
-        List<DataListEmployee> employeesDto = new ArrayList<>();
-        for (Employee employee : employees) {
-            employeesDto.add(new DataListEmployee(employee));
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(employeesDto);
+        final List<DataListEmployee> employees = service.findAll();
+        return ResponseEntity.status(HttpStatus.OK).body(employees);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Employee> findById(@PathVariable("id") String id) {
-        final Employee employee = service
-                .findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Funcionário não encontrado."));
+        final Employee employee = service.findById(id);
         return ResponseEntity.status(HttpStatus.OK).body(employee);
     }
 
     @PutMapping
-    @Transactional
     public ResponseEntity atualizarFuncionario(@RequestBody @Valid DataUpdateEmployee dados) {
-        var funcionario = service.getReferenceById(dados.id());
-        funcionario.update(dados);
-        return ResponseEntity.ok(new DataDetailsEmployee(funcionario));
+        final Employee employee = service.getReferenceById(dados.id());
+        employee.update(dados);
+        return ResponseEntity.ok(new DataDetailsEmployee(employee));
     }
 
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity excluirFuncionario(@PathVariable("id") String id) {
-        var funcionario = service.getReferenceById(id);
-        funcionario.delete();
+        final Employee employee = service.getReferenceById(id);
+        employee.delete();
         return ResponseEntity.noContent().build();
     }
 }

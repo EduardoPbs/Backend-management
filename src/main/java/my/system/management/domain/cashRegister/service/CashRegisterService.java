@@ -1,6 +1,7 @@
 package my.system.management.domain.cashRegister.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import my.system.management.domain.cashRegister.dto.DetailsCashRegisterDto;
 import my.system.management.domain.cashRegister.model.CashRegister;
 import my.system.management.domain.cashRegister.repository.CashRegisterRepository;
@@ -23,14 +24,15 @@ public class CashRegisterService {
     private CashRegisterRepository cashRegisterRepository;
 
     public List<DetailsCashRegisterDto> findAll(Sort sort) {
-        final List<CashRegister> registers = cashRegisterRepository.findAll(sort);
-        List<DetailsCashRegisterDto> registerDtos = new ArrayList<>();
-        for (CashRegister r : registers) {
-            registerDtos.add(new DetailsCashRegisterDto(r));
-        }
-        return Collections.unmodifiableList(registerDtos);
+        final List<DetailsCashRegisterDto> registers = cashRegisterRepository
+                .findAll(sort)
+                .stream()
+                .map(DetailsCashRegisterDto::new)
+                .toList();
+        return registers;
     }
 
+    @Transactional
     public Boolean doEntrance(BigDecimal value) {
         if (value.compareTo(BigDecimal.ZERO) <= 0) {
             throw new ResponseStatusException(
@@ -43,6 +45,7 @@ public class CashRegisterService {
         return true;
     }
 
+    @Transactional
     public Boolean doPullout(BigDecimal value) {
         final CashRegister cashRegister = getCashRegister();
         if (value.compareTo(cashRegister.getTotal()) > 0) {

@@ -1,6 +1,7 @@
 package my.system.management.domain.purchase.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import my.system.management.domain.cashRegister.model.CashRegister;
 import my.system.management.domain.cashRegister.service.CashRegisterService;
 import my.system.management.domain.enums.PurchaseStatus;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,7 +42,7 @@ public class PurchaseService {
     private CashRegisterService cashRegisterService;
 
     public List<Purchase> findAll(Sort sort) {
-        return purchaseRepository.findAll(sort);
+        return Collections.unmodifiableList(purchaseRepository.findAll(sort));
     }
 
     public Purchase findById(String id) {
@@ -53,15 +55,18 @@ public class PurchaseService {
         return purchaseRepository.getReferenceById(id);
     }
 
+    @Transactional
     public Purchase save(Purchase purchase) {
         final Purchase p = new Purchase(purchase.getItems(), purchase.getTotal());
         return purchaseRepository.save(p);
     }
 
+    @Transactional
     public void delete(Purchase purchase) {
         purchaseRepository.delete(purchase);
     }
 
+    @Transactional
     public void addItemInPurchase(DataFinishPurchase data) {
         Purchase purchaseFound = purchaseRepository.findById(data.purchase_id()).orElseThrow(() -> new EntityNotFoundException());
         List<ItemPurchase> items = new ArrayList<>();
